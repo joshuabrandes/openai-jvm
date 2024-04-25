@@ -23,7 +23,7 @@ class OpenAI @JvmOverloads constructor(
         .build()
     private val client = Retrofit.Builder()
         .client(interceptor)
-        .baseUrl(url)
+        .baseUrl(if (url.endsWith("/")) url else "$url/")
         .addConverterFactory(JacksonConverterFactory.create(mapper))
         .build()
 
