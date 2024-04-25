@@ -1,7 +1,7 @@
 package net.joshuabrandes.interactions
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 import net.joshuabrandes.config.Model
 import net.joshuabrandes.model.ChatCompletionRequest
 import net.joshuabrandes.model.ChatMessage
@@ -22,7 +22,7 @@ constructor(
     private val history = mutableListOf<ChatMessage>()
 
     @JvmOverloads
-    suspend fun postChatCompletion(
+    fun postChatCompletion(
         prompt: String,
         role: ChatMessage.Role = ChatMessage.Role.USER,
         model: Model = this.model
@@ -30,7 +30,7 @@ constructor(
         val message = ChatMessage(role, prompt)
         history.addMessage(message)
 
-        val completion = withContext(Dispatchers.IO) {
+        val completion = runBlocking(Dispatchers.IO) {
             chatClient.postChatCompletion(
                 ChatCompletionRequest(
                     model = model,

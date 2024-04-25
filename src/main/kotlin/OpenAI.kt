@@ -11,7 +11,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 class OpenAI @JvmOverloads constructor(
     apiKey: String,
     private val url: String = "https://api.openai.com/v1",
-    chatSystemMessage: String?
+    chatSystemMessage: String? = null
 ) {
 
     @JvmName("getUrl")
