@@ -1,6 +1,8 @@
 package net.joshuabrandes.model
 
 import java.io.File
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 class ImageData private constructor(
     val url: String
@@ -26,11 +28,16 @@ class ImageData private constructor(
                 return this
             }
 
-            fun fromImage(base64Image: String): Builder {
+            fun fromImage(imageContent: String): Builder {
                 assert(this.url.isNotEmpty()) { IMAGE_SET_ERROR }
-                assert(base64Image.isNotEmpty()) { IMAGE_EMPTY_ERROR }
-                this.url = base64Image
+                assert(imageContent.isNotEmpty()) { IMAGE_EMPTY_ERROR }
+                this.url = imageContent
                 return this
+            }
+
+            @OptIn(ExperimentalEncodingApi::class)
+            private fun setImageData(content: String) {
+                this.url = "data:image/jpeg;base64,${Base64.encode(content.toByteArray())}"
             }
 
             fun fromUrl(url: String): Builder {
