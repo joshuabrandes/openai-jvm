@@ -19,13 +19,18 @@ constructor(
     ) {
 
         var text: String? = null
+
         @JsonProperty("image_url")
-        var imageUrl: String? = null
+        var imageUrl: ImageUrl? = null
+
+        data class ImageUrl(
+            val url: String
+        )
 
         init {
             when (type) {
                 MessageType.TEXT -> text = value
-                MessageType.IMAGE -> imageUrl = value
+                MessageType.IMAGE -> imageUrl = ImageUrl(value)
             }
         }
     }
