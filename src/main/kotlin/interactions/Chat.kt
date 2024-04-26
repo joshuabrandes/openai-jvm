@@ -49,6 +49,36 @@ constructor(
         }
     }
 
+    fun postVisionChatWithURL(
+        url: String,
+        role: ChatMessage.Role = ChatMessage.Role.USER,
+        model: Model = this.model
+    ): String {
+        if (model != Model.GPT4_TURBO) {
+            return "Messages with images are only supported with the ${Model.GPT4_TURBO.getModel()} model."
+        }
+        val message = ChatMessage(role, url)
+        history.addMessage(message)
+
+        val completion = runBlocking(Dispatchers.IO) {
+            chatClient.postChatCompletion(
+                ChatCompletionRequest(
+                    model = model,
+                    messages = getMessagesFromHistory()
+                )
+            ).execute()
+        }
+
+        if (completion.isSuccessful) {
+            val response = completion.body()!!
+            val completionMessage = response.choices[0].message
+            history.addMessage(completionMessage)
+            return completionMessage.content
+        } else {
+            throw Exception("Failed to get completion: ${completion.errorBody()}")
+        }
+    }
+
     private fun getMessagesFromHistory(): List<ChatMessage> {
         val messages = mutableListOf(ChatMessage(ChatMessage.Role.SYSTEM, systemMessage))
         messages.addAll(history)

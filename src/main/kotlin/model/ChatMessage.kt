@@ -3,10 +3,8 @@ package net.joshuabrandes.model
 data class ChatMessage(
     val role: Role,
     val content: String
-) {
-    enum class Role {
-        SYSTEM,
-        USER,
-        ASSISTANT
+) : ChatContent() {
+    constructor(role: Role, content: String, maxTokens: Int) : this(role, content) {
+        this.maxTokens = maxTokens
     }
 }
